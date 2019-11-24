@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Faker\Factory as Faker;
 
-class ControllerKontak extends Controller
+class ControllerPengguna extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,7 +15,7 @@ class ControllerKontak extends Controller
      */
     public function index()
     {
-        $data = \App\Kontak::all();
+        $data = \App\Pengguna::all();
 
         if(count($data) > 0){
             $res['message'] = "Success";
@@ -44,20 +46,22 @@ class ControllerKontak extends Controller
      */
     public function store(Request $request)
     {
-        $nama = $request->input('nama');
-        $email = $request->input('email');
-        $nohp = $request->input('nohp');
-        $alamat = $request->input('alamat');
+        $faker = Faker::create();
 
-        $data = new \App\Kontak();
-        $data->nama = $nama;
+        $id = $request->input('id');
+        $name = $request->input('name');
+        $email = $request->input('email');
+        $password = $request->input('password_baru');
+        
+        $data = new \App\Pengguna();
+        $data->name = $name;
         $data->email = $email;
-        $data->nohp = $nohp;
-        $data->alamat = $alamat;
+        $data->password = Hash::make($password);
+        $data->remember_token = $faker->regexify('[A-Za-z0-9]{20}');
+        $data->api_token = str_random(40);
 
         if($data->save()){
             $res['message'] = "Success!";
-            $res['value'] = "$data";
             return response($res);
         }
     }
@@ -70,7 +74,7 @@ class ControllerKontak extends Controller
      */
     public function show($id)
     {
-        $data = \App\Kontak::where('id',$id)->get();
+        $data = \App\Pengguna::where('id',$id)->get();
 
         if(count($data) > 0){
             $res['message'] = "Success";
@@ -101,22 +105,23 @@ class ControllerKontak extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        $nama = $request->input('nama');
+        $id = $request->input('id');
+        $name = $request->input('name');
         $email = $request->input('email');
-        $nohp = $request->input('nohp');
-        $alamat = $request->input('alamat');
-
-        $data = \App\Kontak::where('id',$id)->first();
-        $data->nama = $nama;
+        $password = $request->input('password_baru');
+        
+        $data = \App\Pengguna::where('id',$id)->first();
+        $data->name = $name;
         $data->email = $email;
-        $data->nohp = $nohp;
-        $data->alamat = $alamat;
+
+        if(!empty($password)){
+            $data->password = Hash::make($password);
+        }
 
         if($data->save()){
             $res['message'] = "Success!";
-            $res['value'] = "$data";
             return response($res);
         }
         else{
@@ -131,10 +136,10 @@ class ControllerKontak extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        $data = \App\Kontak::where('id',$id)->first();
-
+        $id = $request->input('id');
+        $data = \App\Pengguna::where('id',$id)->first();
         if($data->delete()){
             $res['message'] = "Success!";
             $res['value'] = "$data";

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateKontaksTable extends Migration
+class AddApiTokenOnUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,8 @@ class CreateKontaksTable extends Migration
      */
     public function up()
     {
-        Schema::create('kontaks', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('nama');
-            $table->string('email');
-            $table->string('alamat');
-            $table->string('nohp');
-            $table->timestamps();
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('api_token', 100)->unique()->after('remember_token');
         });
     }
 
@@ -30,6 +25,8 @@ class CreateKontaksTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kontaks');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('api_token');
+        });
     }
 }

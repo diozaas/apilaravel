@@ -15,13 +15,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Route::get('siswa','SiswaController@index');
-// Route::post('siswa','SiswaController@create');
-// Route::put('siswa/{$id}','SiswaController@update');
-// Route::delete('siswa/{$id}','SiswaController@delete');
-
-Route::get('/kontak','ControllerKontak@index');
-Route::get('/kontak/{id}','ControllerKontak@show');
-Route::post('/kontak/store','ControllerKontak@store');
-Route::post('/kontak/update/{id}','ControllerKontak@update');
-Route::post('/kontak/delete/{id}','ControllerKontak@destroy');
+Route::get('/user','ControllerPengguna@index');
+Route::get('/user/{id}','ControllerPengguna@show');
+Route::post('/user/store','ControllerPengguna@store');
+Route::post('/user/update/','ControllerPengguna@update');
+Route::post('/user/delete/','ControllerPengguna@destroy');
